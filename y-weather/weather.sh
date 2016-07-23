@@ -116,8 +116,11 @@ j=1
 tmp=`echo "$location" | cut -f"$j" -d ","`
 while [ -n "$tmp" ]; do
 #	echo "$tmp"
-	woeid=`curl -s -G "https://query.yahooapis.com/v1/public/yql?diagnostics=true" --data-urlencode "q=select woeid from geo.places where text=\"$tmp\"" | tr ">" "\n" | grep "/woeid" | head -1 | awk '{ split($0, a, "<"); print a[1]; }'`
-	data=`curl -s "http://weather.yahooapis.com/forecastrss?w=$woeid&u=$unit" | grep "<yweather"`
+	data=`curl -s -G "https://query.yahooapis.com/v1/public/yql?diagnostics=true" \
+		--data-urlencode "q=select * from weather.forecast where woeid in (select woeid from geo.places where text=\"$tmp\")" \
+		--data-urlencode "u=$unit" \
+		--data-urlencode "format=json"`
+	echo "$data"
 	if [ $dcond -eq 1 ]; then
 		read_condition
 	fi
@@ -135,5 +138,3 @@ while [ -n "$tmp" ]; do
 	tmp=`echo "$location" | cut -f"$j" -d ","`
 done
 
-#woeid=`curl -s "https://query.yahooapis.com/v1/public/yql?q=select%20woeid%20from%20geo.places%20where%20text%3D%22$location%22&diagnostics=true" | tr ">" "\n" | grep "/woeid" | head -1 | awk '{ split($0, a, "<"); print a[1]; }'`
-#data=`curl -s "http://weather.yahooapis.com/forecastrss?w=$woeid&u=$unit" | grep "<yweather"`
