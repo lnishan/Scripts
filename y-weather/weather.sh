@@ -34,27 +34,27 @@ read_forecast() {
 	do
 		if [ $i -le $ddays ]; then
 			text=`echo "$data" | grep "<yweather" | grep forecast | head -$i | tail -1 | tr '\"' '\n'`
-			date=`echo "$text" | head -4 | tail -1`
-			wkday=`echo "$text" | head -2 | tail -1`
-			low=`echo "$text" | head -6 | tail -1`
-			high=`echo "$text" | head -8 | tail -1`
-			cond=`echo "$text" | head -10 | tail -1`
+			date=`echo "$text" | head -8 | tail -1`
+			wkday=`echo "$text" | head -6 | tail -1`
+			low=`echo "$text" | head -10 | tail -1`
+			high=`echo "$text" | head -12 | tail -1`
+			cond=`echo "$text" | head -14 | tail -1`
 			echo "$date $wkday $low °$symb ~ $high °$symb $cond"
 		fi
 	done
 }
 
 read_condition() {
-	city=`echo "$data" | grep location | tr '\"' '\n' | head -2 | tail -1`
-	cond=`echo "$data" | grep condition | tr '\"' '\n' | head -2 | tail -1`
-	temp=`echo "$data" | grep condition | tr '\"' '\n' | head -6 | tail -1`
+	city=`echo "$data" | grep location | tr '\"' '\n' | head -4 | tail -1`
+	cond=`echo "$data" | grep condition | tr '\"' '\n' | head -6 | tail -1`
+	temp=`echo "$data" | grep condition | tr '\"' '\n' | head -10 | tail -1`
 	echo "$city, $cond, $temp °$symb"
 }
 
 read_sunriseset() {
 	text=`echo "$data" | grep astronomy | tr '\"' '\n'`
-	sunrise=`echo "$text" | head -2 | tail -1`
-	sunset=`echo "$text" | head -4 | tail -1`
+	sunrise=`echo "$text" | head -4 | tail -1`
+	sunset=`echo "$text" | head -6 | tail -1`
 	echo "sunrise: $sunrise, sunset: $sunset"
 }
 
@@ -118,9 +118,9 @@ while [ -n "$tmp" ]; do
 #	echo "$tmp"
 	data=`curl -s -G "https://query.yahooapis.com/v1/public/yql?diagnostics=true" \
 		--data-urlencode "q=select * from weather.forecast where woeid in (select woeid from geo.places where text=\"$tmp\")" \
-		--data-urlencode "u=$unit" \
-		--data-urlencode "format=json"`
-	echo "$data"
+		--data "u=$unit" \
+		| tr ">" "\n" | grep "<yweather"`
+#	echo "$data"
 	if [ $dcond -eq 1 ]; then
 		read_condition
 	fi
