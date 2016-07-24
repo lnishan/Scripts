@@ -450,7 +450,7 @@ check_win() {
 		for j in 0 1 2 3
 		do
 			getn $i $j
-			if [ "$val" != "$emp" ] && [ $val -eq 64 ]; then
+			if [ "$val" != "$emp" ] && [ $val -eq 2048 ]; then
 				win=true
 			fi
 		done
@@ -462,7 +462,7 @@ game() {
 	while :; do
 		print_board
 		get_key
-		if  [ $key == "q" ]; then
+		if  [ "$key" == "q" ]; then
 			break;
 		else
 			case "$key" in
