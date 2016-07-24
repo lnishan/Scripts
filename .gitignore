@@ -1,2 +1,4 @@
 *.tmp
 *.txt
+*.log
+2048/save_*

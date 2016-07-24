@@ -30,6 +30,15 @@ get_rand() {
 	rno=$(( $rno % $1 ))
 }
 
+install() {
+	for i in 1 2 3 4 5
+	do
+		if [ ! -e "save_$i" ]; then
+			touch save_$i
+		fi
+	done
+}
+
 welcome() {
 	 dialog --ok-label "Play a Game" --msgbox "   _________    __  _________\n  / ____/   |  /  |/  / ____/\n / / __/ /| | / /|_/ / __/ \n/ /_/ / ___ |/ /  / / /___   \n\____/_/  |_/_/  /_/_____/\n\n   ___   ____  __ __  ____ \n  |__ \ / __ \/ // / ( __ )\n  __/ // / / / // /_/ __  |\n / __// /_/ /__  __/ /_/ / \n/____/\____/  /_/  \____/  " 16 34
 }
@@ -50,11 +59,11 @@ save_menu() {
 	smtxt=""
 	for i in 1 2 3 4 5
 	do
-		data=`cat save_$i.txt`
+		data=`cat save_$i`
 		if [ -z "$data" ]; then
 			smtxt="$smtxt $i \"<NONE>\""
 		else
-			tme=`stat -f "%Sm" save_$i.txt`
+			tme=`stat -f "%Sm" save_$i`
 			smtxt="$smtxt $i \"$tme\""
 		fi
 	done
@@ -66,7 +75,7 @@ save_game() {
 	if $ingame; then
 		save_menu
 		if [ -n "$sel" ]; then
-			printf "$a00\n$a01\n$a02\n$a03\n$a10\n$a11\n$a12\n$a13\n$a20\n$a21\n$a22\n$a23\n$a30\n$a31\n$a32\n$a33\n" > save_$sel.txt
+			printf "$a00\n$a01\n$a02\n$a03\n$a10\n$a11\n$a12\n$a13\n$a20\n$a21\n$a22\n$a23\n$a30\n$a31\n$a32\n$a33\n" > save_$sel
 			save_game_ok
 		fi
 	fi
@@ -74,7 +83,7 @@ save_game() {
 
 load_game() {
 	save_menu
-	data=`cat save_$sel.txt`
+	data=`cat save_$sel`
 	if [ -z "$data" ]; then
 		clear_board
 		ingame=false
@@ -287,7 +296,7 @@ print_board() {
 
 place_rand24() {
 	if [ "$a00" != "$emp" ] && [ "$a01" != "$emp" ] && [ "$a02" != "$emp" ] && [ "$a03" != "$emp" ] && [ "$a10" != "$emp" ] && [ "$a11" != "$emp" ] && [ "$a12" != "$emp" ] && [ "$a13" != "$emp" ] && [ "$a20" != "$emp" ] && [ "$a21" != "$emp" ] && [ "$a22" != "$emp" ] && [ "$a23" != "$emp" ] && [ "$a30" != "$emp" ] && [ "$a31" != "$emp" ] && [ "$a32" != "$emp" ] && [ "$a33" != "$emp" ]; then
-		echo "Full!" >> log.txt
+		echo "Full!" >> 2048.lo 
 	else
 		while :; do
 			get_rand 4
@@ -490,7 +499,9 @@ game() {
 	done
 }
 
-echo > log.txt
+echo > 2048.log
+
+install
 
 welcome
 
