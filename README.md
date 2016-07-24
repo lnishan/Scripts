@@ -10,3 +10,7 @@
 ## y-weather
 
 ![y-weather.gif](_assets/y-weather.gif)
+
+
+## dir-analyzer
+![dir-analyzer.gif](_assets/dir-analyzer.gif)
