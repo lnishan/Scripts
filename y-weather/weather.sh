@@ -47,7 +47,7 @@ read_forecast() {
 read_condition() {
 	city=`echo "$data" | grep location | tr '\"' '\n' | head -4 | tail -1`
 	cond=`echo "$data" | grep condition | tr '\"' '\n' | head -6 | tail -1`
-	temp=`echo "$data" | grep condition | tr '\"' '\n' | head -10 | tail -1`
+	temp=`echo "$data" | grep condition | tr '\"' '\n' | head -8 | tail -1`
 	echo "$city, $cond, $temp °$symb"
 }
 
@@ -116,9 +116,8 @@ j=1
 tmp=`echo "$location" | cut -f"$j" -d ","`
 while [ -n "$tmp" ]; do
 #	echo "$tmp"
-	data=`curl -s -G "https://query.yahooapis.com/v1/public/yql?diagnostics=true" \
-		--data-urlencode "q=select * from weather.forecast where woeid in (select woeid from geo.places where text=\"$tmp\")" \
-		--data "u=$unit" \
+	data=`curl -s -G "https://query.yahooapis.com/v1/public/yql?u=$unit" \
+		--data-urlencode "q=select * from weather.forecast where woeid in (select woeid from geo.places where text=\"$tmp\") and u='$unit'" \
 		| tr ">" "\n" | grep "<yweather"`
 #	echo "$data"
 	if [ $dcond -eq 1 ]; then
